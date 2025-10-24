@@ -364,7 +364,7 @@ code-similarity/
 
 프로젝트 관련 문의사항이 있으시면 팀원에게 연락해주세요.
 
-**Team**: I'm fine tuning.
+**Team**: I'm fine tuning
 
 ---
 
