@@ -26,6 +26,12 @@ CodeNet 데이터셋을 활용하여 pretrained 모델을 구축하고, 데이�
 | **RoleBERT** | 오정탁 | Role Embedding | **93.17%** | **93.18%** |
 | **Contrastive Learning** | 이서율 | Dual Encoder + AST | **62.18%** | **62.03%** |
 
+### 데이터 전처리
+
+```bash
+python preprocessing/preprocess_corpus.py
+```
+
 ### 모델별 특징
 
 #### 1. CodeBERT (HuggingFace) - 이홍기
@@ -39,7 +45,7 @@ CodeNet 데이터셋을 활용하여 pretrained 모델을 구축하고, 데이�
 **사용법:**
 ```bash
 python tokenizers/bpe_tokenizer_LeeHonggi.py
-python models/codebert_LeeHonggi.py
+python train/codebert_LeeHonggi.py
 ```
 
 #### 2. RoBERTa-small - 황호성
@@ -70,6 +76,18 @@ python train/finetune_roberta_HwangHosung.py --model huggingface
 
 # 3-2. 허깅페이스 파인튜닝 모델 로드만
 python train/finetune_roberta_HwangHosung.py --model huggingface --mode load
+
+# 4. 추론 - 허깅페이스 모델 사용
+python inference/inference_HwangHosung.py \
+    --model huggingface \
+    --test ./data/test.csv \
+    --output ./inference/submission.csv
+
+# 4-1. 추론 - 로컬 모델 사용
+python inference/inference_HwangHosung.py \
+    --model local \
+    --test ./data/test.csv \
+    --output ./inference/submission_local.csv
 ```
 
 #### 3. Custom BERT - 조병률
@@ -81,6 +99,17 @@ python train/finetune_roberta_HwangHosung.py --model huggingface --mode load
   - Baseline 역할
   - 확장 가능한 구조
 
+**사용법:**
+```bash
+# 1-A. custombert 사용
+python train/pretrain_custombert_ByeongRyul.py
+# 1-B. electra 사용
+python train/pretrain_electra_ByeongRyul.py
+# 2. 파인튜닝
+python train/finetune_ByeongRyul.py
+# 3. 추론
+python inference/inference_ByeongRyul.py
+```
 #### 4. RoleBERT - 오정탁
 
 - **핵심**: Role Embedding 추가
@@ -90,6 +119,12 @@ python train/finetune_roberta_HwangHosung.py --model huggingface --mode load
   - AST 기반 코드 정규화
   - 혁신적 시도
 
+**사용법:**
+```bash
+python train/pretrain_rolebert_JeongTak.py
+python train/finetune_JeongTak.py
+```
+
 #### 5. Contrastive Learning - 이서율
 
 - **핵심**: MoCo 기반 듀얼 인코더
@@ -98,6 +133,13 @@ python train/finetune_roberta_HwangHosung.py --model huggingface --mode load
   - AST 구조 정보 활용
   - Hard Negative Mining
   - 실험적 접근
+
+**사용법:**
+```bash
+python tokenizers/unigram_tokenizer_LeeSeoYul.py
+python train/pretrain_LeeSeoYul.py
+python inference/inference_LeeSeoYul.py
+```
 
 ## 🔧 Preprocessing & Tokenization
 
@@ -115,7 +157,7 @@ python train/finetune_roberta_HwangHosung.py --model huggingface --mode load
 
 각 모델별로 최적화된 토크나이저를 `/tokenizers` 폴더에 구현:
 
-#### 1. Unigram (황호성 - RoBERTa)
+#### 1. Unigram (황호성 - RoBERTa, 이서율 - Contrastive)
 
 - 희귀 식별자 처리에 안정적
 - 소규모 데이터에 빠른 수렴
@@ -137,27 +179,41 @@ python train/finetune_roberta_HwangHosung.py --model huggingface --mode load
 ```
 code-similarity/
 ├── README.md                              # 프로젝트 메인 문서
+├── .gitignore                             # Git 제외 파일 설정
+├── preprocessing/                         # 데이터 전처리
+│   └── preprocess_corpus.py              # 코퍼스 전처리 스크립트
+├── tokenizers/                            # 토크나이저 구현
+│   ├── unigram_tokenizer_HwangHosung.py  # Unigram (황호성)
+│   ├── unigram_tokenizer_LeeSeoYul.py    # Unigram (이서율)
+│   ├── bpe_tokenizer_LeeHonggi.py        # BPE (이홍기)
+│   └── sentencepiece_tokenizer.py        # SentencePiece (조병률)
+├── train/                                 # 학습 스크립트
+│   ├── codebert_LeeHonggi.py             # CodeBERT 학습 (이홍기)
+│   ├── pretrain_roberta_HwangHosung.py   # RoBERTa Pretrain (황호성)
+│   ├── finetune_roberta_HwangHosung.py   # RoBERTa Finetune (황호성)
+│   ├── pretrain_rolebert_JeongTak.py     # RoleBERT Pretrain (오정탁)
+│   ├── finetune_JeongTak.py              # RoleBERT Finetune (오정탁)
+│   └── pretrain_LeeSeoYul.py             # Contrastive Pretrain (이서율)
+│   └── pretrain_custombert_ByeongRyul.py # Custombert Pretrain (조병률)
+│   └── pretrain_electra_ByeongRyul.py    # Electra Pretrain (조병률)
+│   └── finetune_ByeongRyul.py            # Finetune (조병률)
+├── inference/                             # 추론 스크립트
+│   ├── inference_HwangHosung.py          # RoBERTa 추론 (황호성)
+│   └── inference_LeeSeoYul.py            # Contrastive 추론 (이서율)
+│   └── inference_ByeongRyul.py            # 두개 모델 추론 (조병률)
+├── models/                                # 모델 아키텍처 정의
+├── data/                                  # 데이터셋
+│   ├── train.csv                         # 학습 데이터
+│   ├── test.csv                          # 테스트 데이터
+│   └── code_corpus_processed.parquet     # 전처리된 코퍼스
 ├── meeting-notes/                         # 회의록 모음
 │   ├── 2025-10-17.md                     # 킥오프 회의록
 │   ├── 2025-10-20.md                     # 전처리 및 토크나이저 결정
 │   ├── 2025-10-21.md                     # 전처리 완료 및 학습 시작
 │   └── 2025-10-22.md                     # 최종 결과 공유
-├── tokenizers/                            # 토크나이저 구현
-│   ├── unigram_tokenizer_HwangHosung.py  # Unigram (황호성)
-│   ├── bpe_tokenizer_LeeHonggi.py        # BPE (이홍기)
-│   └── sentencepiece_tokenizer.py        # SentencePiece
-├── models/                                # 모델 구현
-│   ├── codebert_LeeHonggi.py             # CodeBERT HuggingFace (이홍기)
-│   ├── pretrain_HwangHosung.py           # RoBERTa-small Pretrain (황호성)
-│   ├── finetune_HwangHosung.py           # RoBERTa-small Finetune (황호성)
-│   ├── custom_bert.py                    # Custom BERT (조병률)
-│   ├── rolebert.py                       # RoleBERT (오정탁)
-│   └── contrastive_model.py              # Contrastive Learning (이서율)
-├── data/                                  # 데이터셋
-│   └── code_corpus_processed.parquet     # 전처리된 데이터
 ├── notebooks/                             # 실험 노트북
 └── docs/                                  # 문서 및 자료
-    └── 발표자료_I'm fine tuning.pdf      # 발표자료
+    └── 발표자료.md                        # 최종 발표자료
 ```
 
 ## 📊 Datasets
@@ -278,7 +334,7 @@ code-similarity/
 
 프로젝트의 상세한 분석과 인사이트는 다음 문서에서 확인할 수 있습니다:
 
-**[발표자료_I'm fine tuning.pdf](./docs/발표자료_I'm fine tuning.pdf)**
+**[발표자료.md](./docs/발표자료.md)**
 
 이 보고서는 다음 내용을 포함합니다:
 
@@ -313,5 +369,5 @@ code-similarity/
 ---
 
 **Project Period**: 2025.10.17 ~ 2025.10.23  
-**Last Updated**: 2025.10.23  
+**Last Updated**: 2025.10.24  
 **Status**: ✅ Completed
