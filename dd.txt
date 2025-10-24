@@ -1,0 +1,790 @@
+✓ 파일: code_corpus_processed.parquet
+
+총 행 수: 2,639,300
+총 Row Group 수: 3
+
+랜덤 선택된 Row Group: [0, 2, 1]
+
+======================================================================
+🎲 랜덤 샘플 10개
+======================================================================
+
+======================================================================
+샘플 #1
+======================================================================
+
+[submission_id]: s788328261
+
+[problem_id]: p02642
+
+[text]:
+------------------------------------------------------------
+import math
+from collections import deque
+from collections import defaultdict
+import itertools as it
+
+#自作関数群
+def readInt():
+	return int(input())
+def readInts():
+	return list(map(int, input().split()))
+def readChar():
+	return input()
+def readChars():
+	return input().split()
+def factorization(n):
+	res = []
+	if n%2==0:
+		res.append(2)
+	for i in range(3,math.floor(n//2)+1,2):
+		if n%i==0:
+			c = 0
+			for j in res:
+				if i%j==0:
+					c=1
+			if c==0:
+				res.append(i)
+	if len(res)==0:
+		res = [n]
+	return res
+def fact2(n):
+	p = factorization(n)
+	res = []
+	for i in p:
+		c=0
+		z=n
+		while 1:
+			if z%i==0:
+				c+=1
+				z/=i
+			else:
+				break
+		res.append([i,c])
+	return res
+def fact(n):#階乗
+	ans = 1
+	m=n
+	for _i in range(n-1):
+		ans*=m
+		m-=1
+	return ans
+def comb(n,r):#コンビネーション
+	if n<r:
+		return 0
+	l = min(r,n-r)
+	m=n
+	u=1
+	for _i in range(l):
+		u*=m
+		m-=1
+	return u//fact(l)
+def combmod(n,r,mod):
+	return (fact(n)/fact(n-r)*pow(fact(r),mod-2,mod))%mod
+def printQueue(q):
+	r=copyQueue(q)
+	ans=[0]*r.qsize()
+	for i in range(r.qsize()-1,-1,-1):
+		ans[i] = r.get()
+	print(ans)
+class UnionFind():
+	def __init__(self, n):
+		self.n = n
+		self.parents = [-1]*n
+
+	def find(self, x): # root
+		if self.parents[x]<0:
+			return x
+		else:
+			self.parents[x] = self.find(self.parents[x])
+			return self.parents[x]
+
+	def union(self,x,y):
+		x = self.find(x)
+		y = self.find(y)
+
+		if x==y:
+			return
+
+		if self.parents[x]>self.parents[y]:
+			x,y = y,x
+
+		self.parents[x]+=self.parents[y]
+		self.parents[y]=x
+
+	def size(self,x):
+		return -1*self.parents[self.find(x)]
+
+	def same(self,x,y):
+		return self.find(x)==self.find(y)
+
+	def members(self,x): # much time
+		root = self.find(x)
+		return [i for i in range(self.n) if self.find(i)==root]
+
+	def roots(self):
+		return [i for i,x in enumerate(self.parents) if x<0]
+
+	def group_count(self):
+		return len(self.roots())
+
+	def all_group_members(self):
+		return {r: self.members(r) for r in self.roots()} # 1~n
+def bitArr(n):#ビット全探索
+	x = 1
+	zero = "0"*n
+	ans = []
+	ans.append([0]*n)
+	for i in range(2**n-1):
+		ans.append(list(map(lambda x:int(x),list((zero+bin(x)[2:])[-1*n:]))))
+		x+=1
+	return ans;
+def arrsSum(a1,a2):
+	for i in range(len(a1)):
+		a1[i]+=a2[i]
+	return a1
+def maxValue(a,b,v):
+	v2 = v
+	for i in range(v2,-1,-1):
+		for j in range(v2//a+1): #j:aの個数
+			k = i-a*j
+			if k%b==0:
+				return i
+	return -1
+def copyQueue(q):
+	nq = queue.Queue()
+	n = q.qsize()
+	for i in range(n):
+		x = q.get()
+		q.put(x)
+		nq.put(x)
+	return nq
+def get_sieve_of_eratosthenes(n):
+	data = [2]
+	#data = [0,0,0]
+	for i in range(3,n+1,2):
+		data.append(i)
+		data.append(0)
+	for i in range(len(data)):
+		interval = data[i]
+		if interval!=0:
+			for j in range(i+interval,n-1,interval):
+				data[j] = 0
+	ans = [x for x in data if x!=0]
+	#ans = data[:]
+	return ans
+
+n = readInt()
+a = readInts()
+
+a.sort()
+maxa = max(a)+1
+d = defaultdict(int)
+for i in a:
+	d[i]+=1
+tmp = []
+for i in d:
+	if d[i]==1:
+		tmp.append(i)
+a = tmp[:]
+
+
+ans = [0]*maxa
+for i in a:
+	ans[i] = 1
+
+
+
+for j in a:
+	if ans[j]==0:
+		pass
+	for i in range(j*2,10**6+1,j):
+		if i>maxa-1:
+			break
+		ans[i] = 0
+
+print(ans.count(1))
+------------------------------------------------------------
+
+[code_sha1]: 908a294c00426a1d8b56a6026b345a93050ce9c6
+
+[code_bytes]: 3150
+
+[language]: Python
+
+[status]: Wrong Answer
+
+[date]: 1592189032
+
+[user_id]: u509739538
+
+[n_chars]: 3102
+
+[n_lines]: 185
+
+[text_norm]: import math
+from collections import deque
+from collections import defaultdict
+import itertools as it...
+
+[text_norm_sha1]: 3664b2a69364090aeb099de41e00987648be7c29
+
+[n_chars_norm]: 3908
+
+[n_lines_norm]: 206
+
+======================================================================
+샘플 #2
+======================================================================
+
+[submission_id]: s244284410
+
+[problem_id]: p02660
+
+[text]:
+------------------------------------------------------------
+import math
+N = int(input())
+def check_prime_number(number):
+    check_range = int(math.sqrt(number))  # √n
+    for i in range(2,check_range+1):  
+        if number % i == 0:
+            return False
+    return True
+
+
+if check_prime_number(N):
+    if N != 1: #print("1")
+        print(1)
+    else:
+        print(0)
+else:
+    myans = 0
+    mycnt = 2
+    while mycnt <= N:
+        if N%mycnt == 0:
+            N = N/mycnt
+            #mycnt += 1
+            myans += 1
+    #print(N)
+        mycnt += 1
+    print(myans)
+------------------------------------------------------------
+
+[code_sha1]: 9e7e7a1c8ca636386caf39cfd381b942a7609613
+
+[code_bytes]: 518
+
+[language]: Python
+
+[status]: Wrong Answer
+
+[date]: 1590977184
+
+[user_id]: u919017918
+
+[n_chars]: 516
+
+[n_lines]: 26
+
+[text_norm]: import math
+
+N = int(input())
+
+
+def func1(v1):
+    check_range = int(math.sqrt(v1))
+    for v3 in ra...
+
+[text_norm_sha1]: ffc4aa99a48cce2f677e586c18a86af7680a9f77
+
+[n_chars_norm]: 424
+
+[n_lines_norm]: 28
+
+======================================================================
+샘플 #3
+======================================================================
+
+[submission_id]: s957346925
+
+[problem_id]: p02678
+
+[text]:
+------------------------------------------------------------
+# 参考https://qiita.com/kazukazukazukazu/items/e5db00a3aefb1f5ed72f
+import collections
+import heapq
+
+
+class Dijkstra:
+    def __init__(self):
+        self.e = collections.defaultdict(list)
+
+    def add(self, u, v, d):
+        self.e[u].append([v, d])
+        self.e[v].append([u, d])
+
+    def delete(self, u, v):
+        self.e[u] = [_ for _ in self.e[u] if _[0] != v]
+        self.e[v] = [_ for _ in self.e[v] if _[0] != u]
+
+    def search(self, s):
+        """
+        :param s: 始点
+        :return: 始点から各点までの最短経路
+        """
+        d = collections.defaultdict(lambda: float('inf'))
+        d[s] = 0
+        q = []
+        heapq.heappush(q, (0, s))
+        v = collections.defaultdict(bool)
+        while len(q):
+            k, u = heapq.heappop(q)
+            if v[u]:
+                continue
+            v[u] = True
+
+            for uv, ud in self.e[u]:
+                if v[uv]:
+                    continue
+                vd = k + ud
+                if d[uv] > vd:
+                    d[uv] = vd
+                    heapq.heappush(q, (vd, uv))
+
+        return d
+    
+N, M = map(int, input().split())
+AB = [[int(x) for x in input().split()] for _ in range(M)]
+
+graph1 = Dijkstra()
+
+for a, b in AB:
+    graph1.add(a, b, 1)
+
+ans = []
+for i in range(2, N+1):
+    result = graph1.search(i)
+    ans.append(result[1])
+if float('inf') in ans:
+    print('No')
+else:
+    print('Yes')
+    for a in ans:
+        print(a)
+
+------------------------------------------------------------
+
+[code_sha1]: 8b10842cafc5761b6c6855e5a291fcd99cca5bac
+
+[code_bytes]: 1449
+
+[language]: Python
+
+[status]: Wrong Answer
+
+[date]: 1589766396
+
+[user_id]: u461833298
+
+[n_chars]: 1415
+
+[n_lines]: 62
+
+[text_norm]: import collections
+import heapq
+
+
+class Cls1:
+
+    def func1(v1):
+        self.e = collections.defau...
+
+[text_norm_sha1]: 56ae191bf285c1f3cb641b107ca1fe16cb3c6b54
+
+[n_chars_norm]: 1384
+
+[n_lines_norm]: 58
+
+======================================================================
+샘플 #4
+======================================================================
+
+[submission_id]: s713522270
+
+[problem_id]: p02658
+
+[text]:
+------------------------------------------------------------
+n=int(input())
+a=list(map(int,input().split()))
+t=1
+if 0 in a:
+  print(0)
+  exit()
+
+for i in range(n):
+  t*=a[i]
+  if t> 10**18:
+    print(-1)
+    exit()
+print(t)
+------------------------------------------------------------
+
+[code_sha1]: 9e3ea5a77564c1de8001b4cad26edaaa81231b50
+
+[code_bytes]: 162
+
+[language]: Python
+
+[status]: Accepted
+
+[date]: 1590973858
+
+[user_id]: u879921371
+
+[n_chars]: 162
+
+[n_lines]: 13
+
+[text_norm]: n = int(input())
+a = list(map(int, input().split()))
+t = 1
+if 0 in g2:
+    print(0)
+    exit()
+for g...
+
+[text_norm_sha1]: 2c47f50443be485f4cd78fcb74df9e8ef038b6b6
+
+[n_chars_norm]: 196
+
+[n_lines_norm]: 13
+
+======================================================================
+샘플 #5
+======================================================================
+
+[submission_id]: s865431308
+
+[problem_id]: p02659
+
+[text]:
+------------------------------------------------------------
+import math
+ 
+def main ():
+  a,b = list(input().split())
+  c = int(a)
+  d = float(b)
+  e = d * 100 + 0.5
+  c *= e
+  c /= 100
+  print(math.floor(c))
+ 
+main()
+------------------------------------------------------------
+
+[code_sha1]: 40b36004eb6f9ee5900eba79061bda8382641204
+
+[code_bytes]: 156
+
+[language]: Python
+
+[status]: Wrong Answer
+
+[date]: 1592031443
+
+[user_id]: u341131717
+
+[n_chars]: 156
+
+[n_lines]: 12
+
+[text_norm]: import math
+
+
+def func1():
+    v1, v2 = list(input().split())
+    c = int(v1)
+    d = float(v2)
+    ...
+
+[text_norm_sha1]: 9eddbf71ac73e8b691e6f7ce959ac0e62079a2a8
+
+[n_chars_norm]: 181
+
+[n_lines_norm]: 15
+
+======================================================================
+샘플 #6
+======================================================================
+
+[submission_id]: s665222912
+
+[problem_id]: p02771
+
+[text]:
+------------------------------------------------------------
+A = list(map(int, input().split()))
+if A[0] == A[1] or A[0] == A[2] or A[1] == A[2]:
+    print('Yes')
+else:
+    print('No')
+
+------------------------------------------------------------
+
+[code_sha1]: fe2035406615961368f440263f852021d4f4bcda
+
+[code_bytes]: 124
+
+[language]: Python
+
+[status]: Wrong Answer
+
+[date]: 1586958770
+
+[user_id]: u524534026
+
+[n_chars]: 124
+
+[n_lines]: 6
+
+[text_norm]: A = list(map(int, input().split()))
+if g1[0] == g1[1] or g1[0] == g1[2] or g1[1] == g1[2]:
+    print...
+
+[text_norm_sha1]: 8a39fffb536a3241bc1a53d1fa0154c8edeb147a
+
+[n_chars_norm]: 130
+
+[n_lines_norm]: 6
+
+======================================================================
+샘플 #7
+======================================================================
+
+[submission_id]: s219484958
+
+[problem_id]: p02678
+
+[text]:
+------------------------------------------------------------
+n, m = map(int, input().split())
+g = [[] for _ in range(n+1)]
+for _ in range(m):
+    a, b = map(int, input().split())
+    g[a].append(b)
+    g[b].append(a)
+d = {1:0}
+q = [1]
+for i in q:
+    for j in g[i]:
+        if j not in d:
+            d[j] = i
+            q.append(j)
+print('Yes')
+for i in range(2, n+1):
+    print(d[i])
+------------------------------------------------------------
+
+[code_sha1]: 5f3cff153be24abd1418f366d9e196dd30268842
+
+[code_bytes]: 325
+
+[language]: Python
+
+[status]: Accepted
+
+[date]: 1589834355
+
+[user_id]: u268210555
+
+[n_chars]: 325
+
+[n_lines]: 16
+
+[text_norm]: g1, g2 = map(int, input().split())
+g = [[] for g3 in range(g1 + 1)]
+for g3 in range(g2):
+    g5, g6 ...
+
+[text_norm_sha1]: 0b92cde2207c520ad69eeaf3bc211d95c7adb1d2
+
+[n_chars_norm]: 363
+
+[n_lines_norm]: 17
+
+======================================================================
+샘플 #8
+======================================================================
+
+[submission_id]: s039291018
+
+[problem_id]: p02684
+
+[text]:
+------------------------------------------------------------
+N, K = map(int, input().split())
+A = list(map(int, input().split()))
+A = [-1] + A
+
+visit = {}
+n = 1
+cnt = 0
+remain = K
+# print("remain:", remain)
+while(n not in visit.keys()):
+    visit[n] = cnt
+    cnt+=1
+    n = A[n]
+    remain -= 1
+    if (remain==0):
+        print(n)
+        exit()
+# remain -=1
+
+# print(n, visit[n], cnt)
+d = cnt - visit[n]
+# print(d)
+# print("d: ", d)
+# print("remain:", remain)
+remain = remain%d
+# print("remain:", remain)
+# print("current: ", n)
+while(remain > 0):
+    remain -= 1
+    n = A[n]
+    # print("new n:", n)
+print(n)
+
+
+------------------------------------------------------------
+
+[code_sha1]: b2295e4a8b2c7aa166b4004871c626785a62f5d7
+
+[code_bytes]: 554
+
+[language]: Python
+
+[status]: Accepted
+
+[date]: 1589163124
+
+[user_id]: u235783479
+
+[n_chars]: 554
+
+[n_lines]: 34
+
+[text_norm]: g1, g2 = map(int, input().split())
+A = list(map(int, input().split()))
+A = [-1] + g3
+visit = {}
+n = ...
+
+[text_norm_sha1]: 0b4ad20c423830f4a694d09cbe1e5a2c6d896112
+
+[n_chars_norm]: 340
+
+[n_lines_norm]: 22
+
+======================================================================
+샘플 #9
+======================================================================
+
+[submission_id]: s923620205
+
+[problem_id]: p02675
+
+[text]:
+------------------------------------------------------------
+N = int(input())
+if N == 3:
+    print('Bon')
+elif N % 2 == 0 or N == 1:
+    print('pon')
+elif N % 2 != 0 or N == 2 or N == 4:
+    print('hon')
+------------------------------------------------------------
+
+[code_sha1]: 6bf02c1b084767a55d9fa7dd064070aa9459b490
+
+[code_bytes]: 142
+
+[language]: Python
+
+[status]: Wrong Answer
+
+[date]: 1589764607
+
+[user_id]: u815468655
+
+[n_chars]: 142
+
+[n_lines]: 7
+
+[text_norm]: N = int(input())
+if g1 == 3:
+    print("Bon")
+elif g1 % 2 == 0 or g1 == 1:
+    print("pon")
+elif g1 ...
+
+[text_norm_sha1]: c97e52da75aab1aa19a0c7bfabffe200c24f4213
+
+[n_chars_norm]: 149
+
+[n_lines_norm]: 8
+
+======================================================================
+샘플 #10
+======================================================================
+
+[submission_id]: s730097274
+
+[problem_id]: p02811
+
+[text]:
+------------------------------------------------------------
+ip = raw_input().split()
+k = int(ip[0])
+x = int(ip[1])
+if(500*k >= x): print('yes')
+else: print('no')
+------------------------------------------------------------
+
+[code_sha1]: ad66388993afb78a6593e6073d6af803e22adf0e
+
+[code_bytes]: 101
+
+[language]: Python
+
+[status]: Wrong Answer
+
+[date]: 1578709629
+
+[user_id]: u790304909
+
+[n_chars]: 101
+
+[n_lines]: 5
+
+[text_norm]: ip = raw_input().split()
+k = int(g1[0])
+x = int(g1[1])
+if 500 * g2 >= g3:
+    print("yes")
+else:
+   ...
+
+[text_norm_sha1]: 6e11b06dd398853023c5f3e2d95fd75b7b8d78ac
+
+[n_chars_norm]: 113
+
+[n_lines_norm]: 8
+
+======================================================================
+✅ 완료!
+======================================================================
