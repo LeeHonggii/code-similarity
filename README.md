@@ -2,7 +2,7 @@
 
 > **Team**: I'm fine tuning  
 > **Project Period**: 2025.10.17 ~ 2025.10.23  
-> **Status**: ✅ Completed
+> **Status**: ✅ Completed!
 
 ## 📋 Overview
 
